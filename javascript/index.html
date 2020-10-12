@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+  <!-- Bootstrap CSS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  
+  <link rel="stylesheet" type="text/css" href="../css/main.css">
+  <title>React Application</title>
+</head>
+  <body>
+  
+    <div id="container"></div>
+
+    <script type="text/babel">
+
+      class Comment extends React.Component {
+        
+        constructor(props) {
+              super(props);
+              this.state = {editing: false};
+              this.editFunction = this.editFunction.bind(this);
+              this.saveFunction = this.saveFunction.bind(this);
+            }
+
+        editFunction() {
+          this.setState({editing: true});
+                        }
+
+        saveFunction() {
+          var val = this.refs.newText.value;
+          this.setState({editing: false});
+                        }
+
+        renderNormal(){
+          return (
+            <div className="commentContainer">
+              <div className="commentText">{this.props.children}</div>
+              <button onClick={this.editFunction} className="btn btn-primary">Edit</button>
+              <button onClick={this.deleteFunction} className="btn btn-danger">Remove</button>
+            </div>
+                 );
+                    }
+
+          renderForm(){
+          return (
+            <div className="commentContainer">
+              <textarea ref="newText" defaultValue={this.props.children}></textarea>
+              <button onClick={this.saveFunction} className="btn btn-success">Save</button>
+            </div>
+                 );
+                    }
+
+        deleteFunction() {
+          console.log("Deleted");
+                                }
+
+        render() {
+          if(this.state.editing){
+            return this.renderForm();
+          }else{
+            return this.renderNormal();
+          }
+                 }
+      }
+
+
+      class Board extends React.Component {
+
+        constructor(props) {
+              super(props);
+              this.state = {comments: ["bacon","ham","cheese"]};
+            }
+
+        createComment(){
+          var i;
+          var itemList=[];
+          for (i = 0; i < this.state.comments.length; i++) {
+            itemList.push(<Comment key={i}>{this.state.comments[i]}</Comment>)
+          }
+          return itemList
+        }
+
+        render(){
+          return(
+          <div className="board">
+            {this.createComment()}
+          </div>
+                )
+                }
+      }
+
+      ReactDOM.render(<Board/>, document.getElementById('container'))
+
+    </script>
+  </body>
+</html>
