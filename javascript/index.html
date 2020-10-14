@@ -27,6 +27,7 @@
               this.state = {editing: false};
               this.editFunction = this.editFunction.bind(this);
               this.saveFunction = this.saveFunction.bind(this);
+              this.deleteFunction = this.deleteFunction.bind(this);
             }
 
         editFunction() {
@@ -35,8 +36,13 @@
 
         saveFunction() {
           var val = this.refs.newText.value;
+          this.props.updateCommentText(val,this.props.index)
           this.setState({editing: false});
                         }
+        deleteFunction(){
+          this.props.deleteFromBoard(this.props.index)
+        }
+        
 
         renderNormal(){
           return (
@@ -45,7 +51,7 @@
               <button onClick={this.editFunction} className="btn btn-primary">Edit</button>
               <button onClick={this.deleteFunction} className="btn btn-danger">Remove</button>
             </div>
-                 );
+                  );
                     }
 
           renderForm(){
@@ -54,43 +60,67 @@
               <textarea ref="newText" defaultValue={this.props.children}></textarea>
               <button onClick={this.saveFunction} className="btn btn-success">Save</button>
             </div>
-                 );
+                  );
                     }
 
-        deleteFunction() {
-          console.log("Deleted");
-                                }
 
-        render() {
-          if(this.state.editing){
-            return this.renderForm();
-          }else{
-            return this.renderNormal();
-          }
-                 }
-      }
+
+          render() {
+            if(this.state.editing){
+              return this.renderForm();
+            }else{
+              return this.renderNormal();
+            }
+                  }
+        }
 
 
       class Board extends React.Component {
 
         constructor(props) {
               super(props);
-              this.state = {comments: ["bacon","ham","cheese"]};
+              this.state = {comments: []};
+              this.removeComment = this.removeComment.bind(this);
+              this.updateComment = this.updateComment.bind(this);
+              this.addComment = this.addComment.bind(this);
             }
+        
+        addComment(text){
+          var arr = this.state.comments;
+          arr.push(text)
+          this.setState({comments: arr})
+        }
+        
+        removeComment(i){
+          console.log("Removing comment:" + i);
+          var arr = this.state.comments;
+          arr.splice(i,1);
+          this.setState({comments: arr})
+        }
+
+        updateComment(newText,i){
+          console.log("Updating comment");
+          var arr = this.state.comments;
+          arr[i]=newText;
+          this.setState({comments:arr});
+        }
 
         createComment(){
           var i;
           var itemList=[];
           for (i = 0; i < this.state.comments.length; i++) {
-            itemList.push(<Comment key={i}>{this.state.comments[i]}</Comment>)
+            itemList.push(<Comment key={i} index={i} updateCommentText={this.updateComment} deleteFromBoard={this.removeComment}>{this.state.comments[i]}</Comment>)
           }
           return itemList
         }
 
         render(){
           return(
-          <div className="board">
-            {this.createComment()}
+          <div>
+            <button onClick={this.addComment.bind(null,"Bacon")} className="button-info create">Add new comment</button>
+            <div className="board">
+              {this.createComment()}
+            </div>
           </div>
                 )
                 }
