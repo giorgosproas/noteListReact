@@ -85,10 +85,13 @@
               this.addComment = this.addComment.bind(this);
             }
         
-        addComment(text){
+        addComment(){
+          var text = this.refs.textInput.value
           var arr = this.state.comments;
           arr.push(text)
+          this.refs.textInput.value=""
           this.setState({comments: arr})
+
         }
         
         removeComment(i){
@@ -117,7 +120,9 @@
         render(){
           return(
           <div>
-            <button onClick={this.addComment.bind(null,"Bacon")} className="button-info create">Add new comment</button>
+            <button onClick={this.addComment} className="button-info create">Add new comment</button>
+            <br></br>
+            <input type="text" ref="textInput"></input>
             <div className="board">
               {this.createComment()}
             </div>
